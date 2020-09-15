@@ -56,15 +56,15 @@ private:
 };
 
 // main
-int main()
-{
-	cout << "Template Sample" << endl << endl;
-	cout << "Min = " << min_func('c', 'd') << endl;
-	cout << "Max = " << max_func(56.1, 43.6) << endl;
-
-	// create 2 "TemplateClass" objects and compare them
-	// when doing a comparison, if it not one of the C++ built in data types, C++ will have no idea
-
-	cout << "Max (objects) = " << max_func(TemplateClass<int>(7), TemplateClass<int>(4)).getVal() << endl;
-	return 0;
-}
+//int main()
+//{
+//	cout << "Template Sample" << endl << endl;
+//	cout << "Min = " << min_func('c', 'd') << endl;
+//	cout << "Max = " << max_func(56.1, 43.6) << endl;
+//
+//	// create 2 "TemplateClass" objects and compare them
+//	// when doing a comparison, if it not one of the C++ built in data types, C++ will have no idea
+//
+//	cout << "Max (objects) = " << max_func(TemplateClass<int>(7), TemplateClass<int>(4)).getVal() << endl;
+//	return 0;
+//}
