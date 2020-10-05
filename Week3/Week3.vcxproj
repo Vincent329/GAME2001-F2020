@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{f49c1652-c3f4-43fe-a5c9-210e3af8c60d}</ProjectGuid>
-    <RootNamespace>Week2</RootNamespace>
+    <ProjectGuid>{c7c371c9-8104-40d2-9328-3779645bf217}</ProjectGuid>
+    <RootNamespace>Week3</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -139,12 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Array.h" />
-    <ClInclude Include="OrderedArray.h" />
-    <ClInclude Include="UnorderedArray.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Recursion.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
