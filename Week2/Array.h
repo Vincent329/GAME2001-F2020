@@ -4,6 +4,7 @@
 template <class T>
 class Array
 {
+public:
 	Array(int size, int growBy = 1) :
 		m_array(NULL), m_maxSize(0), m_growSize(0), m_numElements(0)
 	{
@@ -14,9 +15,10 @@ class Array
 			memset(m_array, 0, sizeof(T) * m_maxSize);
 
 			m_growSize = ((growBy > 0) ? growBy : 0);
+			growValue = 1;
 		}
 	}
-	~OrderedArray()
+	~Array()
 	{
 		if (m_array != NULL)
 		{
@@ -36,12 +38,12 @@ class Array
 	{
 		assert(m_array != NULL);
 
-		if (index >= num_elements) // if index surpasses the number of elements we search, just back out of the program
+		if (index >= m_numElements) // if index surpasses the number of elements we search, just back out of the program
 		{
 			return;
 		}
 
-		for (int i = index, i < numElements, i++) // stays O(N)
+		for (int i = index; i < m_numElements; i++) // stays O(N)
 		{
 			if (i + 1 >= m_numElements)
 			{
@@ -76,11 +78,11 @@ class Array
 	{
 		return m_growSize;
 	}
-	int setGrowSize(int val)
+	int setGrowSize()
 	{
-		assert(val >= 0);
-		m_growSize = val * growValue; // IMPORTANT FOR THE ASSIGNMENT, AS IT NEEDS TO INCREMENT BY DOUBLE EACH TIME
+		m_growSize += growValue; // IMPORTANT FOR THE ASSIGNMENT, AS IT NEEDS TO INCREMENT BY DOUBLE EACH TIME
 		growValue *= 2;
+		std::cout << "New growSize = " << m_growSize << std::endl;
 	}
 
 private:
@@ -96,7 +98,7 @@ private:
 		assert(temp != NULL);
 
 		memcpy(temp, m_array, sizeof(T) * m_maxSize);
-
+	
 		delete[] m_array;
 		m_array = temp;
 		temp = NULL;

@@ -1,16 +1,17 @@
 
 #pragma once
 #include <cassert>
+#include "Array.h"
 
 template <class T>
-class OrderedArray
+class OrderedArray /*: public Array */
 {
 public:
 	// Constructor
 	OrderedArray(int size, int growBy = 1) :
 		m_array(NULL), m_maxSize(0), m_growSize(0), m_numElements(0)
 	{
-		if (size)
+		if (size)// if there's something in the arraay
 		{
 			m_maxSize = size;
 			m_array = new T[m_maxSize];	// Dynamically allocated new array
@@ -92,44 +93,8 @@ public:
 	// Searching -- Binary Search -- Big O = O(log N), longer the array, the more efficient this gets
 	int search(T searchKey)
 	{
-		assert(m_array != NULL);
-
-		// Helper variables
-		int lowerBound = 0;
-		int upperBound = m_numElements - 1;
-		int current = 0;
-
-		while (1)	// <-- Replaced with recursion, infinite loop for now
-		{
-			current = (lowerBound + upperBound) >> 1; // Preview of Bitwise operations. Divides by 2
-
-			// Binary search steps:
-			// Step 1: Check if the middle is the value we are looking for
-			if (m_array[current] == searchKey)
-			{
-				// Found the item in the middle of the array. Return the index
-				return current;
-			}
-			// Step 2: Check that we've exhausted all options. Can't find the item
-			else if (lowerBound > upperBound)
-			{
-				return -1;
-			}
-			else
-			{
-				// Step 3: Check which half of the array the value is in
-				if (m_array[current] < searchKey)
-				{
-					lowerBound = current + 1;
-				}
-				else
-				{
-					upperBound = current - 1;
-				}
-			}
-		}
-
-		return -1;
+		return binarySearch(searchKey, 0, m_numElements - 1);
+		// Binary Search Recursively
 	}
 	// Overloaded [] operator
 	const T& operator[](int index)
@@ -161,6 +126,37 @@ public:
 		m_growSize = val;
 	}
 private:
+	int binarySearch(T searchKey, int lowerBound, int upperBound)
+	{
+		assert(m_array != NULL);
+		assert(lowerBound >= 0);
+		assert(upperBound < m_numElements);
+
+		// Bitwise
+		int current = (lowerBound + upperBound) >> 1; // bit shift 1 in the right direction divides by 2
+		if (m_array[current] == searchKey)
+		{
+			// we have found the searchKey in the array, return the index
+			return current;
+		}
+		// are we done searching?
+		else if (lowerBound > upperBound)
+		{
+			return -1; // did not find it in the array
+		}
+		// where's the key?
+		else {
+			if (m_array[current] < searchKey)
+			{
+				// search the upper half
+				return binarySearch(searchKey, current + 1, upperBound);
+			}
+			else {
+				// search the lower half
+				return binarySearch(searchKey, lowerBound, current - 1);
+			}
+		}
+	}
 	// Expand
 	bool Expand()
 	{

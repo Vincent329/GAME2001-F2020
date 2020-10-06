@@ -1,8 +1,9 @@
 #pragma once
 #include <cassert>
+#include "Array.h"
 
 template <class T>
-class UnorderedArray
+class UnorderedArray /*: public Array <T>*/
 {	
 public:
 	// Constructor
@@ -44,36 +45,36 @@ public:
 		m_array[m_numElements] = val;		// just inserting at the last point
 		m_numElements++;					// increasing the size as we move
 	}
-	// Deletion
-	// remove the last item inserted into the array (Big O is O(1) too)
-	void pop()		// not responsible for returning what's popped, just removing the top element
-	{
-		if (m_numElements > 0)		// making sure there is something there
-		{
-			m_numElements--;
-		}
-	}
-	// remove an item given an index
-	// (almost) brute force execution -> Big O = O(N) -> larger array = slower performance
-	void remove(int index)		// searches for array element based on index
-	{
-		assert(m_array != NULL);
-
-		if (index >= num_elements) // if index surpasses the number of elements we search, just back out of the program
-		{
-			return;
-		}
-		
-		for (int i = index, i < numElements, i++) // stays O(N)
-		{
-			if (i + 1 >= m_numElements)
-			{
-				m_array[i] = m_array[i + 1]; // jump over to exact index and overwrite the data, therefore just moving memory back  
-			}
-		}
-		m_numElements--; // REMEMBER TO SUBTRACT THE NUMBER OF ELEMENTS
-	}
-
+	 // Deletion
+	 // remove the last item inserted into the array (Big O is O(1) too)
+	 void pop()		// not responsible for returning what's popped, just removing the top element
+	 {
+	 	if (m_numElements > 0)		// making sure there is something there
+	 	{
+	 		m_numElements--;
+	 	}
+	 }
+	 // remove an item given an index
+	 // (almost) brute force execution -> Big O = O(N) -> larger array = slower performance
+	 void remove(int index)		// searches for array element based on index
+	 {
+	 	assert(m_array != NULL);
+	   
+	 	if (index >= num_elements) // if index surpasses the number of elements we search, just back out of the program
+	 	{
+	 		return;
+	 	}
+	 	
+	 	for (int i = index, i < numElements, i++) // stays O(N)
+	 	{
+	 		if (i + 1 >= m_numElements)
+	 		{
+	 			m_array[i] = m_array[i + 1]; // jump over to exact index and overwrite the data, therefore just moving memory back  
+	 		}
+	 	}
+	 	m_numElements--; // REMEMBER TO SUBTRACT THE NUMBER OF ELEMENTS
+	 }
+	   
 	// Searching (LINEAR SEARCH) -> big O of O(N)
 	int search(T val)
 	{
@@ -86,7 +87,6 @@ public:
 				return i;		// return the reference to object if you find the searched value
 			}
 		}
-		
 		return -1; // otherwise just return -1 if you didn't find anything to indicate not found
 	}
 	// Overload the [] Array
