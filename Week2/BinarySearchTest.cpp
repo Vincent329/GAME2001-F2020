@@ -6,12 +6,12 @@ using namespace std;
 
 int main()
 {
-	cout << "assignment 1 test" << endl;
-	cout << "Recursive Binary Search Example" << endl;
+	cout << "assignment 1 test" << endl << endl;
 
 	OrderedArray<int> array(3); // initial size is going to be 3
 
 	// Test the expansion of the array
+	// for the time being, this allows duplicate data to be inserted
 	array.push(43);
 	array.push(8);
 	array.push(23);
@@ -20,6 +20,13 @@ int main()
 	array.push(83);
 	array.push(44);
 	array.push(28);
+	array.push(23);
+	array.push(44);
+	array.push(46);
+	array.push(2);
+	array.push(3);
+	array.push(96);
+	array.push(34);
 
 	cout << "Ordered Array Contents: ";
 
@@ -28,23 +35,25 @@ int main()
 		cout << " " << array[i];
 	}
 
+	// I want to set the constructor flag for duplicates to false 
+	array.setDuplicateFlag(false);
+
+	// push more values here with duplicates
+	array.push(46);
+	array.push(2);
+	array.push(34);
+
+	// it wouldn't allow any duplicates to be pushed from this point forward
+
 	cout << endl << endl;
 	cout << "Search for 43 was found at index" << endl << endl;
 	cout << array.search(43) << endl;
-	cout << endl << endl;
+	cout << endl;
 	cout << "Current Size of OrderedArray: " << array.GetSize() << endl;
-	cout << "calling SetGrow 3 Times" << endl << endl;
-	array.SetGrowSize();
-	cout << array.GetSize() << endl;
-	array.SetGrowSize();
-	cout << array.GetSize() << endl;
-	array.SetGrowSize();
-	cout << array.GetSize() << endl;
-
-
 	
 	cout << "Merge Sort Algorithm" << endl;
 
+	// just here so that inherited unordered array class works
 	UnorderedArray<int> uarray(5);
 	uarray.push(80);
 	uarray.push(64);

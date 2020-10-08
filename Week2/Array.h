@@ -102,11 +102,37 @@ public:
 	{
 		m_growSize += growValue;
 		growValue *= 2;
-		std::cout << "Current numElements = " << m_numElements << std::endl;
-		std::cout << "New Max Size = " << m_maxSize << std::endl;
+		std::cout << "Adjusting new growth size" << std::endl;
 		std::cout << "New Grow Size = " << m_growSize << std::endl;
 	}
 
+protected:
+	// Expand
+	bool Expand()
+	{
+		if (this->m_growSize <= 0)
+		{
+			return false;
+		}
+
+		T* temp = new T[this->m_maxSize + this->m_growSize];	// same as unordered array
+		assert(temp != NULL);
+
+		memcpy(temp, this->m_array, sizeof(T) * this->m_maxSize);
+
+		delete[] this->m_array;
+		this->m_array = temp;
+		temp = NULL;
+
+		this->m_maxSize += this->m_growSize;
+		std::cout << "Expand Called" << std::endl;
+		std::cout << "Current numElements = " << m_numElements << std::endl;
+		std::cout << "New Max Size: " << this->m_maxSize << std::endl << std::endl;
+
+		return true;
+	}
+
+protected:
 	// Variables
 	T* m_array; // points to the very first element of the array
 

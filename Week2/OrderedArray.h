@@ -14,38 +14,52 @@ public:
 	// Constructor
 	OrderedArray(int size, int growBy = 1) : Array<T>(size, growBy)
 	{
+		m_duplicateFlag = true;
+	}
+
+	// Boolean Flag constructor
+	OrderedArray(int size, bool duplicateFlag, int growBy = 1) : Array<T>(size, growBy)
+	{
+		m_duplicateFlag = duplicateFlag;
 	}
 
 	// Insertion - Big O = O(N)
 	int push(T val)
 	{
-		assert(m_array != NULL);
+		assert(this->m_array != NULL);
 
-		if (m_numElements >= m_maxSize)
+		if (this->m_numElements >= this->m_maxSize)
 		{
-			Expand();
+			this->SetGrowSize();
+			this->Expand();
 		}
 
 		int i, k;
 		// Step 1: Find the index to insert val
-		for (i = 0; i < m_numElements; i++)
+		// extra step, find out if this is a duplicate
+		for (i = 0; i < this->m_numElements; i++)
 		{
-			if (m_array[i] > val)
+			if (this->m_array[i] == val && !(m_duplicateFlag)) // if the value is the same and you don't want any duplicates
+			{
+				std::cout << val << " is a Duplicate.  Breaking out" << std::endl;
+				return -1;
+			}
+			if (this->m_array[i] > val)
 			{
 				break;
 			}
 		}
 
 		// Step 2: Shift everything to the right of the index forward by one
-		for (k = m_numElements; k > i; k--)	// Moving backwards through the array starting at m_numElements
+		for (k = this->m_numElements; k > i; k--)	// Moving backwards through the array starting at this->m_numElements
 		{
-			m_array[k] = m_array[k - 1];
+			this->m_array[k] = this->m_array[k - 1];
 		}
 
 		// Step 3: Insert val into index
-		m_array[i] = val;
+		this->m_array[i] = val;
 
-		m_numElements++;
+		this->m_numElements++;
 
 		return i;
 	}
@@ -53,21 +67,30 @@ public:
 	// Searching -- Binary Search -- Big O = O(log N), longer the array, the more efficient this gets
 	int search(T searchKey)
 	{
-		return binarySearch(searchKey, 0, m_numElements - 1);
+		return binarySearch(searchKey, 0, this->m_numElements - 1);
 		// Binary Search Recursively
 	}
 
+	// getter and setter for duplicate flag
+	bool getDuplicateFlag()
+	{
+		return m_duplicateFlag;
+	}
+	void setDuplicateFlag(bool duplicateFlag)
+	{
+		m_duplicateFlag = duplicateFlag;
+	}
 	
 private:
 	int binarySearch(T searchKey, int lowerBound, int upperBound)
 	{
-		assert(m_array != NULL);
+		assert(this->m_array != NULL);
 		assert(lowerBound >= 0);
-		assert(upperBound < m_numElements);
+		assert(upperBound < this->m_numElements);
 
 		// Bitwise
 		int current = (lowerBound + upperBound) >> 1; // bit shift 1 in the right direction divides by 2
-		if (m_array[current] == searchKey)
+		if (this->m_array[current] == searchKey)
 		{
 			// we have found the searchKey in the array, return the index
 			return current;
@@ -79,7 +102,7 @@ private:
 		}
 		// where's the key?
 		else {
-			if (m_array[current] < searchKey)
+			if (this->m_array[current] < searchKey)
 			{
 				// search the upper half
 				return binarySearch(searchKey, current + 1, upperBound);
@@ -90,27 +113,8 @@ private:
 			}
 		}
 	}
-	// Expand
-	bool Expand()
-	{
-		if (m_growSize <= 0)
-		{
-			return false;
-		}
 
-		T* temp = new T[m_maxSize + m_growSize];	// same as unordered array
-		assert(temp != NULL);
-
-		memcpy(temp, m_array, sizeof(T) * m_maxSize);
-
-		delete[] m_array;
-		m_array = temp;
-		temp = NULL;
-
-		m_maxSize += m_growSize;
-
-		return true;
-	}
+	bool m_duplicateFlag;
 
 };
 
