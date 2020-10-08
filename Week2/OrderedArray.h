@@ -1,34 +1,21 @@
-
 #pragma once
 #include <cassert>
 #include "Array.h"
 
 template <class T>
-class OrderedArray /*: public Array */
+class OrderedArray : public Array<T>
 {
-public:
-	// Constructor
-	OrderedArray(int size, int growBy = 1) :
-		m_array(NULL), m_maxSize(0), m_growSize(0), m_numElements(0)
+public: 
+	// Default Constructor
+	OrderedArray() : Array<T>()
 	{
-		if (size)// if there's something in the arraay
-		{
-			m_maxSize = size;
-			m_array = new T[m_maxSize];	// Dynamically allocated new array
-			memset(m_array, 0, sizeof(T) * m_maxSize);
+	}
 
-			m_growSize = ((growBy > 0) ? growBy : 0);
-		}
-	}
-	// Destructor
-	~OrderedArray()
+	// Constructor
+	OrderedArray(int size, int growBy = 1) : Array<T>(size, growBy)
 	{
-		if (m_array != NULL)
-		{
-			delete[] m_array;
-			m_array = NULL;		// Good programming practice to set unused pointers to NULL
-		}
 	}
+
 	// Insertion - Big O = O(N)
 	int push(T val)
 	{
@@ -62,69 +49,15 @@ public:
 
 		return i;
 	}
-	// Deletion (2 methods)
-	// Remove the last item in the array
-	void pop()
-	{
-		if (m_numElements > 0)
-		{
-			m_numElements--;
-		}
-	}
-	void remove(int index)
-	{
-		assert(m_array != NULL);
 
-		if (index >= m_numElements) 
-		{
-			return;
-		}
-
-		for (int i = index; i < m_numElements; i++)
-		{
-			if (i + 1 < m_numElements)
-			{
-				m_array[i] = m_array[i + 1];
-			}
-		}
-
-		m_numElements--;
-	}
 	// Searching -- Binary Search -- Big O = O(log N), longer the array, the more efficient this gets
 	int search(T searchKey)
 	{
 		return binarySearch(searchKey, 0, m_numElements - 1);
 		// Binary Search Recursively
 	}
-	// Overloaded [] operator
-	const T& operator[](int index)
-	{
-		assert(m_array != NULL && index < m_numElements);
-		return m_array[index];
-	}
-	// Clear
-	void clear()
-	{
-		m_numElements = 0;
-	}
-	// Gets and Sets
-	int GetSize()
-	{
-		return m_numElements;
-	}
-	int GetMaxSize()
-	{
-		return m_maxSize;
-	}
-	int GetGrowSize()
-	{
-		return m_growSize;
-	}
-	void SetGrowSize(int val)
-	{
-		assert(val >= 0);
-		m_growSize = val;
-	}
+
+	
 private:
 	int binarySearch(T searchKey, int lowerBound, int upperBound)
 	{
@@ -178,13 +111,7 @@ private:
 
 		return true;
 	}
-private:
-	// Variables
-	T* m_array;			// Pointer to the beginning of the array
 
-	int m_maxSize;		// Maximum number of items the array can hold
-	int m_growSize;		// How large will the array grow by
-	int m_numElements;	// Number of elements currently in the array.
 };
 
 // TIP FOR THE ASSIGNMENT, SINCE BOTH UNORDERED AND ORDERED ARRAY HAVE VERY SAMEY FUNCTIONS, THIS LEADS TO INHERITANCE FROM A BASE ARRAY CLASS!!!!!!

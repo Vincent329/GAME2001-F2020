@@ -1,12 +1,22 @@
 #pragma once
 #include <cassert>
+#include <iostream>
 
 template <class T>
 class Array
 {
 public:
+
+	// Default Constructor
+	Array() : 
+		m_array(NULL), m_maxSize(0), m_growSize(0), m_numElements(0), growValue(1)
+	{
+		std::cout << "Default Constructor Called" << std::endl;
+	}
+
+	// Constructor
 	Array(int size, int growBy = 1) :
-		m_array(NULL), m_maxSize(0), m_growSize(0), m_numElements(0)
+		m_array(NULL), m_maxSize(0), m_growSize(0), m_numElements(0), growValue(1)
 	{
 		if (size)
 		{
@@ -15,9 +25,10 @@ public:
 			memset(m_array, 0, sizeof(T) * m_maxSize);
 
 			m_growSize = ((growBy > 0) ? growBy : 0);
-			growValue = 1;
 		}
 	}
+
+	// Destructor
 	~Array()
 	{
 		if (m_array != NULL)
@@ -26,6 +37,7 @@ public:
 			m_array = NULL;		// Good programming practice to set unused pointers to NULL
 		}
 	}
+
 	void pop()
 	{
 		if (m_numElements > 0)
@@ -70,49 +82,36 @@ public:
 	{
 		return m_numElements;
 	}
-	int getMaxSize()
+	void SetSize(int size)
+	{
+		m_numElements = size;
+	}
+	int GetMaxSize()
 	{
 		return m_maxSize;
 	}
-	int getGrowSize()
+	void SetMaxSize(int maxSize)
+	{
+		m_maxSize = maxSize;
+	}
+	int GetGrowSize()
 	{
 		return m_growSize;
 	}
-	int setGrowSize()
+	void SetGrowSize()
 	{
-		m_growSize += growValue; // IMPORTANT FOR THE ASSIGNMENT, AS IT NEEDS TO INCREMENT BY DOUBLE EACH TIME
+		m_growSize += growValue;
 		growValue *= 2;
-		std::cout << "New growSize = " << m_growSize << std::endl;
+		std::cout << "Current numElements = " << m_numElements << std::endl;
+		std::cout << "New Max Size = " << m_maxSize << std::endl;
+		std::cout << "New Grow Size = " << m_growSize << std::endl;
 	}
 
-private:
-	// Expand
-	bool Expand()
-	{
-		if (m_growSize <= 0)
-		{
-			return false;
-		}
+	// Variables
+	T* m_array; // points to the very first element of the array
 
-		T* temp = new T[m_maxSize + m_growSize];	// same as unordered array
-		assert(temp != NULL);
-
-		memcpy(temp, m_array, sizeof(T) * m_maxSize);
-	
-		delete[] m_array;
-		m_array = temp;
-		temp = NULL;
-
-		m_maxSize += m_growSize;
-
-		return true;
-	}
-private:
-		// Variables
-		T* m_array; // points to the very first element of the array
-
-		int m_maxSize; // maximum size of my array
-		int m_growSize; // amount the array can grow thorugh expansion
-		int m_numElements; // number of elements currently in the array
-		int growValue;	// assignment purposes, will grow every time set grow size is called
+	int m_maxSize; // maximum size of my array
+	int m_growSize; // amount the array can grow thorugh expansion
+	int m_numElements; // number of elements currently in the array
+	int growValue;	// assignment purposes, will grow every time set grow size is called
 };

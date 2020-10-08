@@ -3,12 +3,12 @@
 #include "Array.h"
 
 template <class T>
-class UnorderedArray /*: public Array <T>*/
+class UnorderedArray : public Array<T>
 {	
 public:
 	// Constructor
-	UnorderedArray(int size, int growBy = 1) :
-		m_array(NULL), m_maxSize(0), m_growSize(0), m_numElements(0)
+	UnorderedArray(int size, int growBy = 1) : 
+		m_array(NULL), m_maxSize(0), m_growSize(0), m_numElements(0), growValue(1)
 	{
 		if (size)
 		{
@@ -16,8 +16,7 @@ public:
 			m_array = new T[m_maxSize]; // dynamically allocating an array to m_maxSize
 			memset(m_array, 0, sizeof(T) * m_maxSize);	// explicitly state to compiler that we're setting aside a set of memory based on type of T
 														// assuming T is int, there's 4 bytes of memory * the size amount of the array.  This will allocate that amount of memory
-			m_growSize = ((growBy > 0) ? growBy = 0);	// prevent array from shrinking, keep it growing, checks if growBy is a value greater than 0, otherwise it will be 0
-			growValue = 1;
+			m_growSize = ((growBy > 0) ? growBy : 0);	// prevent array from shrinking, keep it growing, checks if growBy is a value greater than 0, otherwise it will be 0
 		}
 	}
 	// Destructor
@@ -45,7 +44,8 @@ public:
 		m_array[m_numElements] = val;		// just inserting at the last point
 		m_numElements++;					// increasing the size as we move
 	}
-	 // Deletion
+	
+	// Deletion (2 methods)
 	 // remove the last item inserted into the array (Big O is O(1) too)
 	 void pop()		// not responsible for returning what's popped, just removing the top element
 	 {
@@ -60,12 +60,12 @@ public:
 	 {
 	 	assert(m_array != NULL);
 	   
-	 	if (index >= num_elements) // if index surpasses the number of elements we search, just back out of the program
+	 	if (index >= m_numElements) // if index surpasses the number of elements we search, just back out of the program
 	 	{
 	 		return;
 	 	}
 	 	
-	 	for (int i = index, i < numElements, i++) // stays O(N)
+		for (int i = index; i < m_numElements; i++) // stays O(N)
 	 	{
 	 		if (i + 1 >= m_numElements)
 	 		{
@@ -80,7 +80,7 @@ public:
 	{
 		assert(m_array != NULL);
 
-		for (int i = 0; i < numElements; i++)
+		for (int i = 0; i < m_numElements; i++)
 		{
 			if (m_array[i] == val)
 			{
@@ -89,6 +89,101 @@ public:
 		}
 		return -1; // otherwise just return -1 if you didn't find anything to indicate not found
 	}
+
+	// ----------- SORTING ALGORITHMS -------------------
+	// Bubble Sort -- Big = O(N^2)
+	void BubbleSort()
+	{
+		assert(m_array != NULL);
+
+		T temp;
+
+		for (int k = m_numElements - 1; k > 0; k--)
+		{
+			// Comparing 2 adjacent elements
+			for (int i = 0; i < k; i++)
+			{
+				if (m_array[i] > m_array[i + 1])
+				{
+					// Swap the elements
+					temp = m_array[i];
+					m_array[i] = m_array[i + 1];
+					m_array[i + 1] = temp;
+				}
+			}
+		}
+	}
+	// Selection Sort -- Big-O = O(N^2)
+	void SelectionSort()
+	{
+		assert(m_array != NULL);
+
+		T temp;
+		int min = 0;
+
+		// The lowest position to swap the smallest element too....
+		for (int k = 0; k < m_numElements - 1; k++)
+		{
+			min = k;
+
+			// Iterate through the array to find the smallest value
+			for (int i = k + 1; i < m_numElements; i++)
+			{
+				if (m_array[i] < m_array[min])
+				{
+					// Store the index to the smallest element
+					min = i;
+				}
+			}
+
+			// Swapping of the lowest element with the lowest available index
+			if (m_array[k] > m_array[min])
+			{
+				// Swap
+				temp = m_array[k];
+				m_array[k] = m_array[min];
+				m_array[min] = temp;
+			}
+		}
+	}
+	// Insertion Sort -- Big-O = O(N^2)
+	void InsertionSort()
+	{
+		assert(m_array != NULL);
+
+		T temp;
+		int i = 0;
+
+		for (int k = 1; k < m_numElements; k++)
+		{
+			temp = m_array[k];
+			i = k;
+
+			// Shifting of elements if necessary. Create a space for an element
+			// to be inserted in the correct location.
+			while (i > 0 && m_array[i - 1] >= temp)
+			{
+				// Push elements to the right;
+				m_array[i] = m_array[i - 1];
+				i--;
+			}
+
+			// Place the item in the correct location
+			m_array[i] = temp;
+		}
+	}
+	// Merge Sort -- Big-O = O(N logN)
+	void MergeSort()
+	{
+		assert(m_array != NULL);
+
+		T* tempArray = new T[m_numElements];
+		assert(tempArray != NULL);
+
+		MergeSort(tempArray, 0, m_numElements - 1);
+		delete[] tempArray;
+	}
+
 	// Overload the [] Array
 	T& operator[](int index)						// return a  reference to object to not create a copy of item that we're looking at, looking for actual access to that particular item
 	{
@@ -106,15 +201,15 @@ public:
 	{
 		return m_numElements;
 	}
-	int getMaxSize()
+	int GetMaxSize()
 	{
 		return m_maxSize;
 	}
-	int getGrowSize()
+	int GetGrowSize()
 	{
 		return m_growSize;
 	}
-	int setGrowSize(int val)
+	int SetGrowSize(int val)
 	{
 		assert(val >= 0);
 		m_growSize = val*growValue; // IMPORTANT FOR THE ASSIGNMENT, AS IT NEEDS TO INCREMENT BY DOUBLE EACH TIME
@@ -122,6 +217,58 @@ public:
 	}
 
 private:
+	// Recursive Merge Sort
+	void MergeSort(T* tempArray, int lowerBound, int upperBound)
+	{
+		// Base case
+		if (lowerBound == upperBound)
+		{
+			return;
+		}
+
+		// Determine the middle of the array
+		int mid = (lowerBound + upperBound) >> 1;
+
+		MergeSort(tempArray, lowerBound, mid);		// Lower half MergeSort
+		MergeSort(tempArray, mid + 1, upperBound);	// Upper half MergeSort
+
+		// Merge
+		Merge(tempArray, lowerBound, mid + 1, upperBound);
+	}
+	void Merge(T* tempArray, int low, int mid, int upper)
+	{
+		// LowerBound, Mid+1, Upperbound
+		int tempLow = low, tempMid = mid - 1;
+		int index = 0;
+
+		while (low <= tempMid && mid <= upper)
+		{
+			// Lower of the 2 values is smaller, move it to the tempArray
+			if (m_array[low] < m_array[mid])
+			{
+				tempArray[index++] = m_array[low++];
+			}
+			else
+			{
+				tempArray[index++] = m_array[mid++];
+			}
+		}
+
+		while (low <= tempMid)
+		{
+			tempArray[index++] = m_array[low++];
+		}
+		while (mid <= upper)
+		{
+			tempArray[index++] = m_array[mid++];
+		}
+
+		// Place the stored tempArray into the main array in the correct locations
+		for (int i = 0; i < upper - tempLow + 1; i++)
+		{
+			m_array[tempLow + i] = tempArray[i];
+		}
+	}
 	// Expansion
 	bool Expand()
 	{
