@@ -136,11 +136,11 @@ public:
 	{
 		assert(this->m_array != NULL);
 
-		T* tempArray = new T[this->m_numElements];
+		T* tempArray = new T[this->m_numElements]; // create the new array with the same size as num elements
 		assert(tempArray != NULL);
 
 		MergeSort(tempArray, 0, this->m_numElements - 1);
-		delete[] tempArray;
+		delete[] tempArray; // once merging is done, delete the temp array
 	}
 
 private:
