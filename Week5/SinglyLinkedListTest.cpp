@@ -23,6 +23,7 @@ int main()
 	for (it = lList.Begin(); it != lList.End(); it++)
 	{
 		cout << " " << *it;
+
 	}
 	cout << endl << endl;
 	return 0;

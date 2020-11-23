@@ -16,7 +16,7 @@ public:
 private:
 	// no inheritance, but we want to make sure we can access this
 	T m_data;
-	LinkNode* m_next;
+	LinkNode* m_next; // pointer to the next node
 };
 
 // Define our Iterator
@@ -50,6 +50,7 @@ public:
 	{
 		assert(m_node != NULL);
 			return m_node->m_data; // this is where the friend class declaration is helpful so we have access to this
+								   // when we dereference a link iterator, we'll have access to the data inside
 	}
 
 	// incremental operator (++) -- prefix and postfix(
@@ -131,7 +132,7 @@ public:
 		LinkNode<T>* node = new LinkNode<T>; // creating a new link node
 
 		assert(node != NULL);
-		node->m_data = newData;
+		node->m_data = newData; // fill it with data
 		node->m_next = NULL;
 
 		// Add the node to the existing linked list
