@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{6c73c50b-be5e-4ef1-882f-195e043edeea}</ProjectGuid>
-    <RootNamespace>Week9</RootNamespace>
+    <ProjectGuid>{f83407ea-49ec-411d-9b03-74c51441c656}</ProjectGuid>
+    <RootNamespace>Assignment2</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -139,18 +139,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Deque.h" />
-    <ClInclude Include="DoublyLinkedList.h" />
     <ClInclude Include="PriorityQueue.h" />
     <ClInclude Include="PriorityQueueLinkedList.h" />
-    <ClInclude Include="Queue.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PriorityQueueTest.cpp" />
-    <ClCompile Include="QueueTest.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

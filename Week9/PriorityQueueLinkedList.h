@@ -5,6 +5,7 @@ template <class T> class LinkIterator;
 template <class T> class LinkedList;
 
 // define a node -> ASSIGNMENT REQUIREMENT
+
 template <class T>
 class LinkNode
 {
@@ -13,10 +14,28 @@ public:
 	// by making these friend classes, the Link Iterator and linked List classes will now have access to m_data and m_next
 	friend class LinkIterator<T>;
 	friend class LinkedList<T>;
+	int GetPriority()
+	{
+		return priority;
+	}
+	T getData()
+	{
+		return m_data;
+	}
+	LinkNode* GetNext()
+	{
+		return m_next;
+	}
+	LinkNode* GetPrevious()
+	{
+		return m_previous;
+	}
+
 private:
-	// no inheritance, but we want to make sure we can access this
 	T m_data;
-	LinkNode* m_next;
+	int priority; // priority queue, ASSIGNMENT REQUIREMENT
+
+	LinkNode* m_next; // 
 	LinkNode* m_previous; // DOUBLY LINKED LIST EXCLUSIVE (now we can go forward backward through the list
 };
 
@@ -27,7 +46,8 @@ template <class T>
 class LinkIterator
 {
 public:
-	// define our operations that we can do
+	friend class LinkedList<T>; // New Addition to define the linked list as a friend to access linked list functions
+	
 	// CONSTRUCTOR
 	LinkIterator()
 	{
@@ -65,7 +85,7 @@ public:
 		m_node = m_node->m_next; // pointing to the next part of data
 								 // grabbing the next pointer, which basically points it over to the next pointer
 	}
-	
+
 	// Decremental operator (--) -- prefix and postfix
 	void operator--() // prefix doesn't pass in anything as a parameter
 	{
@@ -89,6 +109,12 @@ public:
 		return (m_node == node); // comparing those two things together to see if they are equivalent
 	}
 
+	// getter for the node
+	LinkNode<T>* GetNode()
+	{
+		return m_node;
+	}
+
 	// Week 9 addition
 	bool isValid()
 	{
@@ -99,8 +125,7 @@ private:
 	LinkNode<T>* m_node; // points to a node in the linked list
 };
 
-// The actual linked list itself
-// what are the properties we want to implement?
+//--------------------- PRIORITY QUEUE LINKED LIST------------------------
 template <class T>
 class LinkedList
 {
@@ -109,8 +134,8 @@ public:
 	LinkedList() : m_size(0), m_root(0), m_lastNode(0) {} // another way to set our values
 	~LinkedList()
 	{
-		// assume we have a couple more nodes, we need to get rid of all our nodes
-		// what we're going to is to pop off all our individual nodes until we go down to the root
+						// assume we have a couple more nodes, we need to get rid of all our nodes
+						// what we're going to is to pop off all our individual nodes until we go down to the root
 		while (m_root) // while loop will break out once m_root is gone
 		{
 			Pop();
@@ -124,7 +149,7 @@ public:
 	LinkNode<T>* Begin()
 	{
 		assert(m_root != NULL);
-		return m_root;
+		return m_root; // returns root node
 	}
 
 	LinkNode<T>* End()
@@ -139,8 +164,71 @@ public:
 	}
 
 	// --------------------- END POSITIONING FUNCTIONS ----------------------
-	// --------------------- LINKED LIST OPERATIONS --------------------
 
+
+	// --------------------- BEGIN PRIORITY QUEUE FUNCTIONS --------------------
+	// inserting before and Inserting after
+	// whenever we have a node, there's a priority value that inserts the node at the appropriate location depending on that priority value
+	// give ourselves the ability to insert into queue before or after what the iterator is pointing to
+
+	void Insert_Before(LinkIterator<T>& it, T newData, int priorityOrder = 0)
+	{ 
+		assert(it.m_node != NULL);
+		
+		LinkNode<T>* node = new LinkNode<T>;
+		assert(node != NULL);
+		// recall that LinkNode has a pointer to what's next and what's previous
+		// in the case of this function, insert the new node to before where the iterator is pointing to
+
+		node->m_data = newData; // give the data
+		node->priority = priorityOrder;
+		node->m_next = it.m_node; // next pointer of new node is going to point to 
+		node->m_previous = it.m_node->m_previous; // wherever the iterator's previous node was pointing to becomes the new node's previous pointer
+
+		// point the previous node to the new node
+		if (node->m_previous != NULL)
+		{
+			node->m_previous->m_next = node; // so the previous pointer's next pointer is going to point to the new node
+			
+		}
+		it.m_node->m_previous = node; // change the pointed iterator's previous node to the new node
+		
+		// now check if the iterator was pointing to the root
+		if (it.m_node == m_root)
+		{
+			m_root = node;
+		}
+		m_size++; // remember to increase the max size
+	}
+
+	void Insert_After(LinkIterator<T>& it, T newData)
+	{
+		assert(it.m_node != NULL);
+		
+		LinkNode<T>* node = new LinkNode<T>;
+		assert(node != NULL);
+
+		// similar functionality to insert before, just with flipped logic to account for what's next to the iterator
+		node->m_data = newData;
+		node->m_next = it.m_node->m_next; // if the next pointer is null, it's null
+		node->m_previous = it.m_node;
+
+		if (node->m_next != NULL)
+		{
+			node->m_next->m_previous = node;
+		}
+		it.m_node->m_next = node;
+
+		if (it.m_node == m_lastNode)
+		{
+			m_lastNode = node;
+		}
+		m_size++;
+	}
+
+	// haven't done anything with the priority queue itself yet, we're just making helper functions
+	// ------------------ END PRIORITY QUEUE LINKED LIST FUNCTIONS------------------------
+	
 	// --------------------- LINKED LIST OPERATIONS --------------------
 
 	// Push to the front of list (Double Ended exclusive)
@@ -180,7 +268,7 @@ public:
 
 		// reroute my pointers
 		m_root = m_root->m_next; // set the new root to the next thing
-		
+
 		if (m_root != NULL)
 		{
 			m_root->m_previous = NULL;
@@ -203,7 +291,7 @@ public:
 
 
 	// 1) push
-	void Push(T newData)
+	void Push(T newData, int priorityOrder = 0)
 	{
 		// rule of thumb
 		// first thing you do is create a standalone node
@@ -213,6 +301,7 @@ public:
 		LinkNode<T>* node = new LinkNode<T>; // creating a new link node
 
 		assert(node != NULL);
+		node->priority = priorityOrder;
 		node->m_data = newData; // fils in data
 		node->m_next = NULL; // next pointer 
 		node->m_previous = NULL; // safety net
@@ -260,7 +349,7 @@ public:
 			// we can go right to the end
 
 			LinkNode<T>* prevNode = m_lastNode->m_previous; // make this previous node the node just before the last node
-			
+
 			// previous while loop simply positions the pointer to 2nd last node of in the list
 			prevNode->m_next = NULL; // make the next node of the 2nd last node null
 			delete m_lastNode; // delete the contents of last node
