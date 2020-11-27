@@ -8,7 +8,7 @@ int main()
 
 	const int SIZE = 20;
 	//PriorityQueue <NetworkMessage, less_cmp<NetworkMessage> > que(SIZE);
-	PriorityQueue<char> testQueue(SIZE);
+	PriorityQueue<int> testQueue(SIZE);
 
 	
 	testQueue.push(100, 3); 

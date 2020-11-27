@@ -291,7 +291,8 @@ public:
 	}
 
 
-	// 1) push
+	// 1) push 
+	// ASSIGNMENT NOTE, added priority order to add to the Link Node
 	void Push(T newData, int priorityOrder = 0)
 	{
 		// rule of thumb
